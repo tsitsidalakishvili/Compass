@@ -1,0 +1,161 @@
+[
+  {
+    "slug": "governance_constitution_changes",
+    "theme": "Politics & Governance",
+    "prompt": "Georgia should undertake large-scale constitutional reforms to rebalance power between institutions and regions.",
+    "axes": {"social": -1},
+    "question": "Do you intend to initiate any significant changes to the Constitution of Georgia?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Transform Tbilisi into a regional transit hub by 2024, expand air links to every major city within three hours, and build logistics infrastructure that unlocks 5,000 jobs. Each district would get its own municipal service center with cultural, digital, and health services while Soviet-era housing is converted into European-style urban buildings."
+      },
+      {
+        "name": "Coalition for Change - Ahali, Droa, Girchi-More Freedom",
+        "position": "Prioritise participatory city planning: develop distinct functions and strategies for every district, re-purpose old industrial areas (Avchala, Didube, Nadzaladevi) into modern civic spaces, and deploy blockchain-enabled municipal service hubs that decentralize access to government, health, and cultural resources."
+      },
+      {
+        "name": "For Georgia",
+        "position": "Use constitutional reform to decentralize the capital: each district gains its own employment center, access to municipal services, and modernised residential stock. Strategic infrastructure—including airports, freight logistics, and district service centers—should carry constitutional guarantees so the city’s location advantage benefits the whole country."
+      }
+    ]
+  },
+  {
+    "slug": "justice_independence",
+    "theme": "Justice System",
+    "prompt": "Georgia should dramatically reform the courts to guarantee independence, transparency, and public trust.",
+    "axes": {"social": -2},
+    "question": "What kind of policy will you implement to strengthen the independence of the courts and improve confidence in the judicial system?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Introduce vetting for judges, fill vacancies to speed trials, curb the power of the High Council of Justice, and create an arbitration system in partnership with the London International Court of Arbitration to restore confidence in commercial disputes."
+      },
+      {
+        "name": "Coalition for Change - Ahali, Droa, Girchi-More Freedom",
+        "position": "Launch comprehensive judicial reform with integrity checks for judges, expand juries for criminal cases that can lead to imprisonment, and guarantee that courts protect rights, property, and economic development."
+      },
+      {
+        "name": "For Georgia",
+        "position": "Restructure every pillar of justice—courts, prosecutors, police, investigative agencies—under a system of checks and balances. Reform the High Council of Justice with a double two-thirds rule, shield honest judges, and use independent oversight to eliminate corruption inside the judiciary."
+      },
+      {
+        "name": "Girchi",
+        "position": "Let citizens directly elect first-instance judges, expand juries to any offense carrying six months of prison, and create parallel judicial tracks (elected judges, juries, appointed judges) so defendants can pick the venue they trust. Pair the overhaul with a large amnesty and a rewrite of the criminal code to remove victimless crimes."
+      }
+    ]
+  },
+  {
+    "slug": "decentralization_self_government",
+    "theme": "Decentralization & Self-Government",
+    "prompt": "Self-governments should gain fiscal autonomy and elect local officials so decisions move closer to citizens.",
+    "axes": {"social": -1},
+    "question": "What is your vision about self-government? What do you think about decentralization issues?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Georgian Dream",
+        "position": "Local communities should solve local problems. Revenue raised in a region must stay there, and central government interference should be minimized so municipalities can address needs rapidly."
+      },
+      {
+        "name": "Coalition for Change - Ahali, Droa, Girchi-More Freedom",
+        "position": "Advocate for locally elected police chiefs, judges, and tax-setting powers. Citizens know their needs best, so decentralization should give municipalities authority over budgets and service delivery without central gatekeepers."
+      },
+      {
+        "name": "For Georgia",
+        "position": "Redraw the administrative map, keep a share of income tax in municipalities, expand delegated powers (water, waste, agriculture, tourism), and pair new autonomy with local anti-corruption units plus an independent supervisory board."
+      },
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Depoliticize the police, elect the Prosecutor General with a two-thirds majority, focus prisons on rehabilitation, and create a national anti-corruption agency that can seize illicit assets and overhaul procurement."
+      },
+      {
+        "name": "Girchi",
+        "position": "Pursue radical decentralization so each municipality elects its police chief, judges, and prosecutors. Regions should set their own taxes, experiment with governance models, and even choose universal basic income approaches to eliminate extreme poverty."
+      }
+    ]
+  },
+  {
+    "slug": "electoral_system_threshold",
+    "theme": "Electoral System",
+    "prompt": "Georgia should adopt a low electoral threshold and modern voting access to open the political arena.",
+    "axes": {"social": -1},
+    "question": "What kind of electoral system should exist in Georgia?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Girchi",
+        "position": "Replace the 5% barrier with a natural 0.67% threshold so new parties can enter parliament, splinter groups can form without fear, and coalition governments replace one-party dominance."
+      },
+      {
+        "name": "Coalition for Change - Ahali, Droa, Girchi-More Freedom",
+        "position": "Guarantee free, pressure-free elections with healthy party competition. Citizens must be able to choose representatives in a transparent environment that increases accountability."
+      },
+      {
+        "name": "For Georgia",
+        "position": "Elect Central Election Commission members by political consensus, immediately enable online voting for immigrants, and restore direct presidential elections so ballots remain the core instrument of democratic change."
+      },
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Reform the judicial and electoral systems to meet European standards, build a unified database of immigrants, integrate it into the census, and ensure polling access so every voter can participate."
+      }
+    ]
+  },
+  {
+    "slug": "public_service_reform",
+    "theme": "Public Service Reform",
+    "prompt": "Georgia should digitize and professionalize the civil service even if that expands the role of the state.",
+    "axes": {"economic": -1},
+    "question": "Do you have a plan for further development/reform of the civil service? What are your priorities?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Digitize all branches of government, raise service quality, eliminate nepotism in hiring, privatize state companies tied to corruption risks, and expand civil-service opportunities for people with disabilities."
+      },
+      {
+        "name": "Georgian Dream",
+        "position": "Increase civil-servant salaries by 10% annually, add GEL 100 monthly for arts, sports, and kindergarten staff, open public service halls in all 133 municipalities by 2028, and fund land registration for 500,000 plots."
+      },
+      {
+        "name": "Girchi",
+        "position": "Shrink the state dramatically by abolishing most ministries, give departing civil servants three years of salary, and let the market—not a 'caring' government—drive opportunity."
+      }
+    ]
+  },
+  {
+    "slug": "anti_corruption_agency",
+    "theme": "Corruption & Transparency",
+    "prompt": "Georgia should create an independent anti-corruption agency outside the security services.",
+    "axes": {"social": -1},
+    "question": "What about your anti-corruption policy? How can you conceptualize the activities of the anti-corruption agency at the Prime Minister's office?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Confiscate unexplained wealth, overhaul procurement with offshore transparency, strip the State Security Service of anti-corruption powers, and launch a National Anti-Corruption Agency accountable to parliament."
+      },
+      {
+        "name": "For Georgia",
+        "position": "Finish the reforms started while in government—transfer oversight away from security services, build an independent investigative body, and purge corruption from municipalities, ministries, and courts with zero tolerance for elite capture."
+      }
+    ]
+  },
+  {
+    "slug": "immigrant_voting_access",
+    "theme": "Diaspora Voting",
+    "prompt": "Georgia should expand voting access for immigrants through data integration and new polling channels.",
+    "axes": {"social": -1},
+    "question": "Do you support an additional practical opportunity for immigrants to participate in elections?",
+    "source": "https://partiebi.com/2024/eng/compeare",
+    "parties": [
+      {
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "position": "Create a unified national immigrant database tied to the census, open polling stations in every major settlement abroad, and drop the requirement to register at a specific precinct."
+      }
+    ]
+  }
+]
+
