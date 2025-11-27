@@ -1,5 +1,7 @@
+import base64
 import json
 import math
+from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List
 
@@ -10,6 +12,7 @@ st.set_page_config(
     page_title="Political Compass Party Matcher",
     page_icon="🧭",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 RESPONSE_LABELS = [
@@ -40,62 +43,84 @@ def load_policy_topics() -> List[Dict]:
         return []
 
 
+LOGO_PATH = Path(__file__).parent / "logos"
+
+
+@lru_cache(maxsize=None)
+def load_logo_data(filename: str | None) -> str | None:
+    if not filename:
+        return None
+    path = LOGO_PATH / filename
+    if not path.exists():
+        return None
+    mime = "image/" + path.suffix.lower().replace(".", "")
+    with path.open("rb") as img_file:
+        encoded = base64.b64encode(img_file.read()).decode("utf-8")
+    return f"data:{mime};base64,{encoded}"
+
+
+def get_party_logo(name: str) -> str | None:
+    for party in PARTY_PROFILES:
+        if party["name"].lower() == name.lower():
+            return party.get("logo")
+    return None
+
+
+def get_logo_path(filename: str | None) -> str | None:
+    if not filename:
+        return None
+    path = LOGO_PATH / filename
+    return str(path) if path.exists() else None
+
+
+CHATBOT_LOGO_PATH = get_logo_path("bot.png")
+
+
 PARTY_PROFILES = [
     {
-        "name": "Progressive Greens",
-        "econ_anchor": -7,
-        "soc_anchor": -7,
-        "summary": "Deep redistribution, global cooperation, and expansive civil liberties.",
-        "priority": "Climate justice, social safety nets, participatory democracy.",
-        "color": "#2ca02c",
-    },
-    {
-        "name": "Social Democrats",
-        "econ_anchor": -5,
-        "soc_anchor": -1,
-        "summary": "Tax-funded welfare state with modest institutional guardrails.",
-        "priority": "Universal services, worker power, pro-democracy alliances.",
-        "color": "#1f77b4",
-    },
-    {
-        "name": "Liberal Internationalists",
-        "econ_anchor": -1,
-        "soc_anchor": -4,
-        "summary": "Mixed economy pragmatists who emphasize rights and open societies.",
-        "priority": "Regulated markets, civil rights, international institutions.",
-        "color": "#ff7f0e",
-    },
-    {
-        "name": "Market Libertarians",
+        "name": "Girchi",
         "econ_anchor": 7,
         "soc_anchor": -6,
-        "summary": "Minimal state in both markets and personal life.",
-        "priority": "Low taxes, deregulation, maximal personal freedom.",
-        "color": "#d62728",
+        "summary": "Libertarian, pro-market platform focused on deregulation and civil liberties.",
+        "priority": "Low taxes, minimal state, ending victimless-crime prosecutions.",
+        "color": "#f39c12",
+        "logo": "girchi.jpg",
     },
     {
-        "name": "Center Conservatives",
-        "econ_anchor": 4,
-        "soc_anchor": 3,
-        "summary": "Pro-market with an emphasis on order and traditional institutions.",
-        "priority": "Business-friendly reforms, cautious social change, strong defense.",
-        "color": "#9467bd",
-    },
-    {
-        "name": "National Populists",
+        "name": "Coalition for Change - Ahali, Droa, Girchi-More Freedom",
         "econ_anchor": -1,
-        "soc_anchor": 7,
-        "summary": "Economically mixed but favor a strong cultural state.",
-        "priority": "Borders, national industry, majoritarian values.",
-        "color": "#8c564b",
+        "soc_anchor": -2,
+        "summary": "Liberal reformers pushing for transparent institutions and local empowerment.",
+        "priority": "Judicial reform, decentralization, accountable governance.",
+        "color": "#1abc9c",
+        "logo": "droa.jpg",
     },
     {
-        "name": "Technocratic Centrists",
-        "econ_anchor": 2,
-        "soc_anchor": -1,
-        "summary": "Data-first moderates balancing markets with targeted regulation.",
-        "priority": "Evidence-based policy, innovation, limited but effective government.",
-        "color": "#17becf",
+        "name": "Strong Georgia–Lelo, for People, for Liberty",
+        "econ_anchor": -4,
+        "soc_anchor": -2,
+        "summary": "Social-liberal bloc combining market dynamism with welfare safeguards.",
+        "priority": "Public service modernization, anti-corruption, inclusive development.",
+        "color": "#2980b9",
+        "logo": "lelo.jpg",
+    },
+    {
+        "name": "Georgian Dream",
+        "econ_anchor": 3,
+        "soc_anchor": 3,
+        "summary": "Incumbent coalition favoring gradual reform, conservative social order.",
+        "priority": "Fiscal stability, service expansion, traditional institutions.",
+        "color": "#8e44ad",
+        "logo": "georgian dream.jpg",
+    },
+    {
+        "name": "For Georgia",
+        "econ_anchor": 1,
+        "soc_anchor": 1,
+        "summary": "Technocratic centrists emphasizing anti-corruption and balanced governance.",
+        "priority": "Independent institutions, anti-corruption drive, EU alignment.",
+        "color": "#c0392b",
+        "logo": "for georgia.png",
     },
 ]
 
@@ -153,6 +178,42 @@ def build_compass_chart(economic_position: float, social_position: float):
 
     fig.add_hline(y=0, line_width=1, line_color="#bbbbbb")
     fig.add_vline(x=0, line_width=1, line_color="#bbbbbb")
+
+    fig.add_trace(
+        go.Scatter(
+            x=[party["econ_anchor"] for party in PARTY_PROFILES],
+            y=[party["soc_anchor"] for party in PARTY_PROFILES],
+            mode="markers",
+            marker=dict(
+                size=10,
+                color=[party["color"] for party in PARTY_PROFILES],
+                symbol="diamond",
+                line=dict(color="#222", width=1),
+            ),
+            hovertemplate="<b>%{customdata}</b><br>Economic %{x:.1f}<br>Social %{y:.1f}<extra></extra>",
+            customdata=[party["name"] for party in PARTY_PROFILES],
+            name="Parties",
+        )
+    )
+
+    for party in PARTY_PROFILES:
+        logo_src = load_logo_data(party.get("logo"))
+        if not logo_src:
+            continue
+        fig.add_layout_image(
+            dict(
+                source=logo_src,
+                x=party["econ_anchor"],
+                y=party["soc_anchor"],
+                sizex=1.8,
+                sizey=1.8,
+                xanchor="center",
+                yanchor="middle",
+                xref="x",
+                yref="y",
+                layer="above",
+            )
+        )
 
     fig.add_trace(
         go.Scatter(
@@ -237,6 +298,14 @@ def answer_with_program_facts(question: str) -> str:
     return "\n\n".join(response_lines)
 
 
+def summarize_text(text: str, limit: int = 220) -> str:
+    stripped = text.strip()
+    if len(stripped) <= limit:
+        return stripped
+    truncated = stripped[:limit].rsplit(" ", 1)[0]
+    return f"{truncated}…"
+
+
 def main():
     st.title("Political Compass Party Matcher")
     st.caption(
@@ -251,92 +320,53 @@ def main():
         )
         return
 
-    col_programs, col_compass = st.columns((1.05, 1))
-
-    with col_programs:
-        st.subheader("Party programs by topic")
-        topic_idx = st.selectbox(
-            "Choose a topic",
-            options=list(range(len(POLICY_TOPICS))),
-            format_func=lambda idx: POLICY_TOPICS[idx]["theme"],
-            key="topic_picker",
-        )
-        topic = POLICY_TOPICS[topic_idx]
-        st.markdown(f"**Question:** {topic['question']}")
-        st.caption(f"Source: {topic['source']}")
-        party_options = [party["name"] for party in topic["parties"]]
-        selected_parties = st.multiselect(
-            "Select parties to compare",
-            options=party_options,
-            default=party_options,
-            key=f"party_selector_topic_{topic_idx}",
-        )
-        if not selected_parties:
-            st.info("Pick at least one party above to read their detailed position.")
-        else:
-            for party in topic["parties"]:
-                if party["name"] in selected_parties:
-                    with st.expander(party["name"], expanded=True):
-                        st.write(party["position"])
-
-    with col_compass:
-        st.subheader(
-            "Compass view",
-            help="The chart expands to fill the page so you can focus on how the red dot moves.",
-        )
-        compass_chart_placeholder = st.empty()
-        compass_caption_placeholder = st.empty()
-
-    st.sidebar.header("How scoring works")
-    st.sidebar.write(
-        "- Economic axis: redistribution & markets\n"
-        "- Social axis: authority vs. liberty\n"
-        "Agreeing with a prompt nudges you toward the direction encoded for that statement."
-    )
-   
     if "answers" not in st.session_state:
         st.session_state["answers"] = [RESPONSE_LABELS[2]] * len(POLICY_TOPICS)
     elif len(st.session_state["answers"]) != len(POLICY_TOPICS):
-        # Resize stored answers if new topics were added to the dataset.
         existing = st.session_state["answers"]
         resized = (existing + [RESPONSE_LABELS[2]] * len(POLICY_TOPICS))[: len(POLICY_TOPICS)]
         st.session_state["answers"] = resized
     if "topic_picker" not in st.session_state:
         st.session_state["topic_picker"] = 0
 
-    st.sidebar.header(
-        "Question navigator",
-        help=(
-            "Pick a prompt, set your stance, then jump with the arrows below. "
-            "The compass updates instantly."
-        ),
+    st.subheader("Question & stance")
+    topic_idx = st.selectbox(
+        "Choose a topic",
+        options=list(range(len(POLICY_TOPICS))),
+        format_func=lambda idx: POLICY_TOPICS[idx]["theme"],
+        index=st.session_state["topic_picker"],
     )
-    question_idx = st.session_state["topic_picker"]
-    current_topic = POLICY_TOPICS[question_idx]
-    st.sidebar.caption(f"Currently scoring: {current_topic['theme']}")
+    if topic_idx != st.session_state["topic_picker"]:
+        st.session_state["topic_picker"] = topic_idx
+    current_topic = POLICY_TOPICS[st.session_state["topic_picker"]]
 
-    current_answer = st.session_state["answers"][question_idx]
-    stance_choice = st.sidebar.radio(
-        current_topic["prompt"],
+    current_answer = st.session_state["answers"][st.session_state["topic_picker"]]
+    st.markdown(
+        f"<div style='font-size:1.2rem;font-weight:600'>{current_topic['prompt']}</div>",
+        unsafe_allow_html=True,
+    )
+    stance_choice = st.radio(
+        "Select your stance",
         RESPONSE_LABELS,
         index=RESPONSE_LABELS.index(current_answer),
+        horizontal=True,
         help="Selections default to neutral until you change them.",
-        key=f"stance_{question_idx}",
+        key=f"stance_{st.session_state['topic_picker']}",
     )
-    st.session_state["answers"][question_idx] = stance_choice
+    st.session_state["answers"][st.session_state["topic_picker"]] = stance_choice
 
-    nav_prev, nav_next = st.sidebar.columns(2)
+    nav_prev, nav_next = st.columns(2)
     nav_prev.button(
-        "← Prev",
+        "← Prev topic",
         use_container_width=True,
-        disabled=question_idx == 0,
+        disabled=st.session_state["topic_picker"] == 0,
         on_click=move_topic,
         kwargs={"delta": -1},
     )
     nav_next.button(
-        "Next →",
+        "Next topic →",
         use_container_width=True,
-        disabled=question_idx == len(POLICY_TOPICS) - 1,
+        disabled=st.session_state["topic_picker"] == len(POLICY_TOPICS) - 1,
         on_click=move_topic,
         kwargs={"delta": 1},
     )
@@ -344,21 +374,54 @@ def main():
     answered_count = sum(
         response != RESPONSE_LABELS[2] for response in st.session_state["answers"]
     )
-    st.sidebar.progress(
+    st.progress(
         answered_count / len(POLICY_TOPICS),
         text=f"{answered_count}/{len(POLICY_TOPICS)} answered",
+    )
+    st.caption("Complete every topic to unlock the most accurate compass reading.")
+
+
+    raw_scores = {axis: 0 for axis in AXES}
+    for response, policy_topic in zip(st.session_state["answers"], POLICY_TOPICS):
+        strength = RESPONSE_SCORES[response]
+        for axis, weight in policy_topic["axes"].items():
+            raw_scores[axis] += strength * weight
+
+    normalized = score_responses(raw_scores)
+    quadrant = classify_quadrant(normalized["economic"], normalized["social"])
+    party_matches = rank_parties(normalized["economic"], normalized["social"])
+    top_party = party_matches[0]
+
+    st.sidebar.header("How scoring works", divider="gray")
+    st.sidebar.write(
+        "- Economic axis: redistribution & markets\n"
+        "- Social axis: authority vs. liberty\n"
+        "Agreeing with a prompt nudges you toward the direction encoded for that statement."
+    )
+    st.sidebar.plotly_chart(
+        build_compass_chart(
+            normalized["economic"], normalized["social"]
+        ),
+        use_container_width=True,
     )
 
     if "chat_messages" not in st.session_state:
         st.session_state["chat_messages"] = []
 
-    with st.sidebar.expander("💬 Party-program chatbot", expanded=False):
+    bot_expander_label = "Party-program chatbot"
+    bot_logo_data = load_logo_data("bot.png")
+    if bot_logo_data:
+        bot_expander_label = (
+            f"<span style='display:flex;align-items:center;font-weight:700;font-size:1.05rem;'>"
+            f"<img src='{bot_logo_data}' width='32' style='margin-right:0.5rem;'/>Chatbot"
+            f"</span>"
+        )
+
+    with st.sidebar.expander(bot_expander_label, expanded=False):
         st.caption(
             "Ask about a party or topic. Answers quote the program text above."
         )
-        if not st.session_state["chat_messages"]:
-            st.info("No chat history yet. Ask the first question!")
-        else:
+        if st.session_state["chat_messages"]:
             for message in st.session_state["chat_messages"]:
                 role_label = "You" if message["role"] == "user" else "Assistant"
                 st.markdown(f"**{role_label}:** {message['content']}")
@@ -381,34 +444,40 @@ def main():
             )
             st.rerun()
 
-    raw_scores = {axis: 0 for axis in AXES}
-    answer_map = []
-    for response, policy_topic in zip(st.session_state["answers"], POLICY_TOPICS):
-        strength = RESPONSE_SCORES[response]
-        for axis, weight in policy_topic["axes"].items():
-            raw_scores[axis] += strength * weight
-        answer_map.append(
-            {
-                "prompt": policy_topic["prompt"],
-                "response": response,
-                "delta": strength,
-                "axes": policy_topic["axes"],
-            }
-        )
+    current_topic = POLICY_TOPICS[st.session_state["topic_picker"]]
 
-    normalized = score_responses(raw_scores)
-    quadrant = classify_quadrant(normalized["economic"], normalized["social"])
-    party_matches = rank_parties(normalized["economic"], normalized["social"])
-    top_party = party_matches[0]
+    st.subheader(f"Party views on {current_topic['theme']}")
+    st.markdown(f"**{current_topic['question']}**")
+    st.caption(f"[Source link]({current_topic['source']})")
+    party_names = [party["name"] for party in current_topic["parties"]]
+    filter_key = f"party_filter_{current_topic.get('slug', st.session_state['topic_picker'])}"
+    selected_parties = st.multiselect(
+        "Choose which parties to display",
+        party_names,
+        default=party_names,
+        key=filter_key,
+    )
 
-    chart = build_compass_chart(
-        normalized["economic"], normalized["social"]
-    )
-    compass_chart_placeholder.plotly_chart(chart, use_container_width=True)
-    compass_caption_placeholder.caption(
-        "Quadrants: ↙️ Progressive Libertarian · ↖️ Progressive Communitarian · "
-        "↗️ Market Communitarian · ↘️ Market Libertarian"
-    )
+    party_count = len(selected_parties)
+    if party_count == 0:
+        st.info("Select at least one party to see their program summary.")
+    else:
+        filtered_parties = [
+            party for party in current_topic["parties"] if party["name"] in selected_parties
+        ]
+        cols = st.columns(min(5, len(filtered_parties)))
+        for idx, party in enumerate(filtered_parties):
+            with cols[idx % len(cols)]:
+                logo_name = get_party_logo(party["name"])
+                logo_src = load_logo_data(logo_name) if logo_name else None
+                logo_path = get_logo_path(logo_name)
+                if logo_src:
+                    st.image(logo_path or logo_src, width=120, caption=party["name"])
+                else:
+                    st.markdown(f"**{party['name']}**")
+                st.write(summarize_text(party["position"]))
+                with st.expander("Full statement"):
+                    st.write(party["position"])
 
 if __name__ == "__main__":
     main()
