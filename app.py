@@ -408,42 +408,6 @@ def main():
     if "chat_messages" not in st.session_state:
         st.session_state["chat_messages"] = []
 
-    bot_expander_label = "Party-program chatbot"
-    bot_logo_data = load_logo_data("bot.png")
-    if bot_logo_data:
-        bot_expander_label = (
-            f"<span style='display:flex;align-items:center;font-weight:700;font-size:1.05rem;'>"
-            f"<img src='{bot_logo_data}' width='32' style='margin-right:0.5rem;'/>Chatbot"
-            f"</span>"
-        )
-
-    with st.sidebar.expander(bot_expander_label, expanded=False):
-        st.caption(
-            "Ask about a party or topic. Answers quote the program text above."
-        )
-        if st.session_state["chat_messages"]:
-            for message in st.session_state["chat_messages"]:
-                role_label = "You" if message["role"] == "user" else "Assistant"
-                st.markdown(f"**{role_label}:** {message['content']}")
-
-        with st.form("sidebar_chat_form", clear_on_submit=True):
-            user_prompt = st.text_input(
-                "Your question",
-                placeholder="e.g. What does Girchi promise about public service reform?",
-                key="sidebar_chat_input",
-            )
-            submitted = st.form_submit_button("Send")
-
-        if submitted and user_prompt:
-            st.session_state["chat_messages"].append(
-                {"role": "user", "content": user_prompt}
-            )
-            response = answer_with_program_facts(user_prompt)
-            st.session_state["chat_messages"].append(
-                {"role": "assistant", "content": response}
-            )
-            st.rerun()
-
     current_topic = POLICY_TOPICS[st.session_state["topic_picker"]]
 
     st.subheader(f"Party views on {current_topic['theme']}")
